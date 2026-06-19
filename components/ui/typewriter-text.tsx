@@ -20,7 +20,7 @@ interface TypewriterTextProps {
 export function TypewriterText({
   text,
   className,
-  speed = 32,
+  speed = 55,
   delay = 0,
   showCursor = true,
   startOnView = true,

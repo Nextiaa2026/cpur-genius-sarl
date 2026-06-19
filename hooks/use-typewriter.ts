@@ -8,9 +8,18 @@ interface UseTypewriterOptions {
   enabled?: boolean;
 }
 
+function getCharDelay(char: string, baseSpeed: number) {
+  if (char === " ") return baseSpeed * 1.8;
+  if (char === "." || char === "," || char === ";" || char === ":") {
+    return baseSpeed * 2.8;
+  }
+  if (char === "?" || char === "!") return baseSpeed * 3.2;
+  return baseSpeed;
+}
+
 export function useTypewriter(
   text: string,
-  { speed = 35, delay = 0, enabled = true }: UseTypewriterOptions = {}
+  { speed = 55, delay = 0, enabled = true }: UseTypewriterOptions = {}
 ) {
   const [displayText, setDisplayText] = useState("");
   const [isComplete, setIsComplete] = useState(false);
@@ -39,23 +48,39 @@ export function useTypewriter(
     setIsComplete(false);
 
     let index = 0;
-    let intervalId: ReturnType<typeof setInterval>;
-    const timeoutId = setTimeout(() => {
-      intervalId = setInterval(() => {
-        index += 1;
-        setDisplayText(text.slice(0, index));
-        if (index >= text.length) {
-          clearInterval(intervalId);
-          setIsComplete(true);
-        }
-      }, speed);
-    }, delay);
+    let cancelled = false;
+    const timeouts: ReturnType<typeof setTimeout>[] = [];
+
+    const typeNext = () => {
+      if (cancelled || index >= text.length) {
+        if (!cancelled) setIsComplete(true);
+        return;
+      }
+
+      index += 1;
+      setDisplayText(text.slice(0, index));
+
+      if (index < text.length) {
+        const charDelay = getCharDelay(text[index - 1], speed);
+        const timeoutId = setTimeout(typeNext, charDelay);
+        timeouts.push(timeoutId);
+      } else {
+        setIsComplete(true);
+      }
+    };
+
+    const startId = setTimeout(typeNext, delay);
+    timeouts.push(startId);
 
     return () => {
-      clearTimeout(timeoutId);
-      if (intervalId) clearInterval(intervalId);
+      cancelled = true;
+      timeouts.forEach(clearTimeout);
     };
   }, [text, speed, delay, enabled, reducedMotion]);
 
-  return { displayText, isComplete, isTyping: enabled && !isComplete && !reducedMotion };
+  return {
+    displayText,
+    isComplete,
+    isTyping: enabled && !isComplete && !reducedMotion,
+  };
 }

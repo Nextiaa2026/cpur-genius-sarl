@@ -22,7 +22,7 @@ export function HeroSection() {
   }, [total]);
 
   useEffect(() => {
-    const timer = setInterval(next, 7000);
+    const timer = setInterval(next, 12000);
     return () => clearInterval(timer);
   }, [next]);
 
@@ -64,8 +64,8 @@ export function HeroSection() {
             key={`title-${slide.id}`}
             text={slide.title}
             as="h1"
-            speed={30}
-            delay={400}
+            speed={72}
+            delay={500}
             startOnView={false}
             className="font-display block max-w-4xl text-[clamp(2rem,6vw,4.5rem)] font-extrabold leading-[1.05] tracking-tight text-brand-white"
           />
@@ -74,14 +74,14 @@ export function HeroSection() {
             key={`sub-${slide.id}`}
             text={slide.subtitle}
             as="p"
-            speed={18}
-            delay={1200}
+            speed={48}
+            delay={2800}
             startOnView={false}
             showCursor={false}
             className="mt-5 block max-w-xl text-sm leading-relaxed text-brand-white/85 sm:text-base md:text-lg"
           />
 
-          <Reveal variant="fade-up" delay={1800} duration={600}>
+          <Reveal variant="fade-up" delay={3200} duration={900}>
             <div className="mt-8 flex flex-wrap gap-3 sm:gap-4">
               <Button
                 asChild

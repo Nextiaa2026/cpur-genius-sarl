@@ -151,17 +151,22 @@
     -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 95%);
   }
   .typewriter-cursor {
-    animation: cursor-blink 0.75s step-end infinite;
+    animation: cursor-blink 1.1s ease-in-out infinite;
+    transition: opacity 0.2s ease;
   }
 }
 
 @keyframes cursor-blink {
   0%,
-  100% {
+  45% {
     opacity: 1;
   }
-  50% {
-    opacity: 0;
+  50%,
+  95% {
+    opacity: 0.15;
+  }
+  100% {
+    opacity: 1;
   }
 }
 
